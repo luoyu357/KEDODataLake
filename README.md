@@ -32,7 +32,7 @@ Edit the `application.properties` file under `src/main/resources` and set your p
 vi LIDO/src/main/resources/application.properties
 ```
 
-Edit the `config.properties` file under `src/main/java/id/edu/kedo` and set the information for Handle System, Cordra, and temporal folder for service
+Edit the `config.properties` file under `src/main/java/id/edu/kedo` and set the information for Handle System, GraphDB, and MongoDB for service
 
 ```
 vi LIDO/src/main/java/iu/edu/kedo/config.properties
