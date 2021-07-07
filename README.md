@@ -13,10 +13,11 @@ The major goals of the KEDO Data Lake fall into three distinct bins:
 1. Apache Maven V3.0 or higher
 2. JDK V1.6 or higher
 3. GraphDB 9.8
-4. Handle service
-5. MongoDB service
+4. MongoDB service
 
+### Service Dependence:
 
+1. Handle service v9.3.0
 
 ### Building the Source
 
@@ -29,13 +30,13 @@ git clonehttps://github.com/luoyu357/KEDODataLake.git
 Edit the `application.properties` file under `src/main/resources` and set your port for the service
 
 ```
-vi LIDO/src/main/resources/application.properties
+vi KEDODataLake/src/main/resources/application.properties
 ```
 
 Edit the `config.properties` file under `src/main/java/id/edu/kedo` and set the information for Handle System, GraphDB, and MongoDB for service
 
 ```
-vi LIDO/src/main/java/iu/edu/kedo/config.properties
+vi KEDODataLake/src/main/java/iu/edu/kedo/config.properties
 ```
 
 
@@ -45,7 +46,7 @@ Edit the `href` field in `.html` files under `src/main/resources/templates` and 
 vi xxxx.html
 ```
 
-Build and run the Airbox Data Lake
+Build and run the KEDO Data Lake
 
 ```
 mvn spring-boot:run
