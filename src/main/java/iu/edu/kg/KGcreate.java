@@ -94,10 +94,10 @@ public class KGcreate {
         
 		
 		//2. create KEDO KG
-		Resource kedoKG = createKEDO("KEDO KG", "");
+		
+        Resource kedoKG = createKEDO("KEDO KG", "");
 		String kedoKGID = kedoKG.getURI();
 		String kedoKGPID = kedoKG.getProperty(propertyPID).getString();
-		
 			
         kiKG.put("dateCreation", date);
         kiKG.put("etag", "KEDO KG PID");
@@ -106,7 +106,7 @@ public class KGcreate {
         
         kiH = hm.KI(kiKG, new HashMap<String, String>(), new HashMap<String, String>());
 		
-		createHandle(kedoKGPID, kiKG);
+		createHandle(kedoKGPID, kiH);
 		hm.createHandle(kedoKGPID, kiH);
 		
 		this.kg.addPredicate(kedoKGPID, "http://www.openarchives.org/ore/terms#aggregates", kedoObjectPID);
@@ -291,7 +291,7 @@ public class KGcreate {
 			String hs = "http://www.kedo.com/";
 			String prefix =  this.input.property.getProperty("handle.restful.api.url");
 			String s = UUID.randomUUID().toString();
-			//properties.put("http://www.entity.com/field#pid", prefix+s);
+			properties.put("http://www.entity.com/field#pid", prefix+s);
 			//CREATE
 			Resource KEDOType = this.kg.createResource(hs, s, properties);
 			
@@ -426,8 +426,20 @@ public class KGcreate {
 
 		newKG.addPredicate(insight.getURI(), "http://www.openarchives.org/ore/terms#aggregates", varIRI);
 		
-        
-        createHandle(prefix+s, kiKG);
+    
+        HashMap<String, String> cn = new HashMap<String, String>();
+
+		String propertyns = "http://www.entity.com/field#";
+		for (Map.Entry item : newkiH.entrySet()) {
+			if (item.getKey().toString().equals("etag")) {
+				cn.put(RDFS.label.toString(), item.getValue().toString());
+			}
+			cn.put(propertyns+item.getKey().toString(), item.getValue().toString());
+		}
+		
+		cn.put(RDF.type.toString(), "PID");
+		newKG.createResource("", prefix+s, cn);
+		
         hm.createHandle(prefix+s, newkiH);
         
         newKG.addPredicate(insight.getURI(), "http://www.openarchives.org/ore/terms#isReferencedBy", prefix+s);

@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -65,14 +66,11 @@ public class FrontEnd {
         return "home";
     }
 	
-	
-
 	@GetMapping("/upload")
 	public String uploadPage() {
 		return "upload";
 	}
 	
-
 	@GetMapping("/query")
 	public String queryPage() {
 		return "query";
@@ -88,13 +86,10 @@ public class FrontEnd {
 		return "update";
 	}
 	
-	@GetMapping("/updateInsight")
-	public String updateInsightPage() {
-		return "updateInsight";
-	}
 	
 	
-	@PostMapping("/updateInsight")
+	
+	@PostMapping("/insight")
 	public ModelAndView insightUpdate(
 			 @RequestParam(required = true) String filePID,
 			 @RequestParam(required = true) String containerPID,
@@ -116,30 +111,30 @@ public class FrontEnd {
 	
 	
 	@PostMapping("/update")
-	public ModelAndView provenanceUpdate(@RequestParam(required = true) String targetPID,
-			 @RequestParam(required = true) String provenance,
-			 @RequestParam(required = true) String objectPID	
+	public ModelAndView provenanceUpdate(@RequestParam(required = true) String target,
+			 @RequestParam(required = true) String pro,
+			 @RequestParam(required = true) String object	
 			) throws Exception {
-		
+		System.out.println("uodate");
 		UpdateProvenance updateOp = new UpdateProvenance();
 		
 		HashMap<String, String> prov = new HashMap<String, String>();
-		prov.put(provenance, objectPID);
+		prov.put(pro, object);
 		
 		HashMap<String, String> output = new HashMap<String, String>();
-		updateOp.UpdateProvenance(targetPID, prov);
+		updateOp.UpdateProvenance(target, prov);
 		ResolvePID handle = new ResolvePID();
 		
-		List<String> alternateOf = new ArrayList<String>();
-		List<String> primarySourceOf = new ArrayList<String>();
-		List<String> quotationOf = new ArrayList<String>();
-		List<String> revisionOf = new ArrayList<String>();
-		List<String> specializationOf = new ArrayList<String>();
-		List<String> wasDerivedFrom = new ArrayList<String>();
+		List<String> alternateOf = new LinkedList<String>();
+		List<String> primarySourceOf = new LinkedList<String>();
+		List<String> quotationOf = new LinkedList<String>();
+		List<String> revisionOf = new LinkedList<String>();
+		List<String> specializationOf = new LinkedList<String>();
+		List<String> wasDerivedFrom = new LinkedList<String>();
 		String lastModified = "";
 		
 		
-		ArrayList<String[]> temp = handle.handleResolve(targetPID);
+		ArrayList<String[]> temp = handle.handleResolve(target);
 		
 		for (String[] item : temp) {
 			output.put(item[1], item[2]);
@@ -148,36 +143,36 @@ public class FrontEnd {
 				lastModified = item[2];
 			}
 			if (item[1].equals("alternateOf")) {
-				alternateOf = Arrays.asList(item[2].split(","));
+				alternateOf = new LinkedList<String>(Arrays.asList(item[2].split(",")));
 			}
 			if (item[1].equals("primarySourceOf")) {
-				primarySourceOf = Arrays.asList(item[2].split(","));
+				primarySourceOf = new LinkedList<String>(Arrays.asList(item[2].split(",")));
 			}
 			if (item[1].equals("quotationOf")) {
-				quotationOf = Arrays.asList(item[2].split(","));
+				quotationOf = new LinkedList<String>(Arrays.asList(item[2].split(",")));
 			}
 			if (item[1].equals("revisionOf")) {
-				revisionOf = Arrays.asList(item[2].split(","));
+				revisionOf = new LinkedList<String>(Arrays.asList(item[2].split(",")));
 			}
 			if (item[1].equals("specializationOf")) {
-				specializationOf = Arrays.asList(item[2].split(","));
+				specializationOf = new LinkedList<String>(Arrays.asList(item[2].split(",")));
 			}
 			if (item[1].equals("wasDerivedFrom")) {
-				wasDerivedFrom = Arrays.asList(item[2].split(","));
+				wasDerivedFrom = new LinkedList<String>(Arrays.asList(item[2].split(",")));
 			}
 		}
 		
-		String[] oldKGPID = new KGquery().queryOne(targetPID, (new Property()).property.getProperty("graphdb")).split("\n");
+		String[] oldKGPID = new KGquery().queryOne(target, (new Property()).property.getProperty("graphdb")).split("\n");
 		
 		KGupdate update = new KGupdate();
 		if (oldKGPID.length > 1) {
 			//existed
-			for (String item : oldKGPID) {
-				String key = item.split(",")[0].split("#")[1];
-				String value = item.split(",")[0];
+			for (int i = 1; i < oldKGPID.length; i++) {
+				String key = oldKGPID[i].split(",")[0].split("#")[1];
+				String value = oldKGPID[i].split(",")[1];
 				
 				if (key.equals("lastModified")) {
-					update.PIDlastModified(targetPID, lastModified);
+					update.PIDlastModified(target, lastModified);
 				}
 				if (key.equals("alternateOf")) {
 					alternateOf.remove(value);
@@ -204,27 +199,27 @@ public class FrontEnd {
 		
 		if (!alternateOf.isEmpty()) {
 			for (String extra : alternateOf)
-			update.PIDprovenUpdate(targetPID, "alternateOf", extra);
+			update.PIDprovenUpdate(target, "alternateOf", extra);
 		}
 		if (!primarySourceOf.isEmpty()) {
 			for (String extra : primarySourceOf)
-			update.PIDprovenUpdate(targetPID, "primarySourceOf", extra);
+			update.PIDprovenUpdate(target, "primarySourceOf", extra);
 		}
 		if (!quotationOf.isEmpty()) {
 			for (String extra : quotationOf)
-			update.PIDprovenUpdate(targetPID, "quotationOf", extra);
+			update.PIDprovenUpdate(target, "quotationOf", extra);
 		}
 		if (!revisionOf.isEmpty()) {
 			for (String extra : revisionOf)
-			update.PIDprovenUpdate(targetPID, "revisionOf", extra);
+			update.PIDprovenUpdate(target, "revisionOf", extra);
 		}
 		if (!specializationOf.isEmpty()) {
 			for (String extra : specializationOf)
-			update.PIDprovenUpdate(targetPID, "specializationOf", extra);
+			update.PIDprovenUpdate(target, "specializationOf", extra);
 		}
 		if (!wasDerivedFrom.isEmpty()) {
 			for (String extra : wasDerivedFrom)
-			update.PIDprovenUpdate(targetPID, "wasDerivedFrom", extra);
+			update.PIDprovenUpdate(target, "wasDerivedFrom", extra);
 		}
 		
 		
@@ -286,12 +281,12 @@ public class FrontEnd {
 		ResolvePID handle = new ResolvePID();
 		HashMap<String, String> output = new HashMap<String, String>();
 		if (pid != null) {
-			List<String> alternateOf = new ArrayList<String>();
-			List<String> primarySourceOf = new ArrayList<String>();
-			List<String> quotationOf = new ArrayList<String>();
-			List<String> revisionOf = new ArrayList<String>();
-			List<String> specializationOf = new ArrayList<String>();
-			List<String> wasDerivedFrom = new ArrayList<String>();
+			List<String> alternateOf = new LinkedList<String>();
+			List<String> primarySourceOf = new LinkedList<String>();
+			List<String> quotationOf = new LinkedList<String>();
+			List<String> revisionOf = new LinkedList<String>();
+			List<String> specializationOf = new LinkedList<String>();
+			List<String> wasDerivedFrom = new LinkedList<String>();
 			String lastModified = "";
 			
 			
@@ -299,27 +294,29 @@ public class FrontEnd {
 			
 			for (String[] item : temp) {
 				output.put(item[1], item[2]);
+				System.out.println(item[1]);
+				System.out.println(item[2]);
 				
 				if (item[1].equals("lastModified")) {
 					lastModified = item[2];
 				}
 				if (item[1].equals("alternateOf")) {
-					alternateOf = Arrays.asList(item[2].split(","));
+					alternateOf = new LinkedList<String>(Arrays.asList(item[2].split(",")));
 				}
 				if (item[1].equals("primarySourceOf")) {
-					primarySourceOf = Arrays.asList(item[2].split(","));
+					primarySourceOf = new LinkedList<String>(Arrays.asList(item[2].split(",")));
 				}
 				if (item[1].equals("quotationOf")) {
-					quotationOf = Arrays.asList(item[2].split(","));
+					quotationOf = new LinkedList<String>(Arrays.asList(item[2].split(",")));
 				}
 				if (item[1].equals("revisionOf")) {
-					revisionOf = Arrays.asList(item[2].split(","));
+					revisionOf = new LinkedList<String>(Arrays.asList(item[2].split(",")));
 				}
 				if (item[1].equals("specializationOf")) {
-					specializationOf = Arrays.asList(item[2].split(","));
+					specializationOf = new LinkedList<String>(Arrays.asList(item[2].split(",")));
 				}
 				if (item[1].equals("wasDerivedFrom")) {
-					wasDerivedFrom = Arrays.asList(item[2].split(","));
+					wasDerivedFrom = new LinkedList<String>(Arrays.asList(item[2].split(",")));
 				}
 			}
 			
@@ -328,15 +325,18 @@ public class FrontEnd {
 			KGupdate update = new KGupdate();
 			if (oldKGPID.length > 1) {
 				//existed
-				for (String item : oldKGPID) {
-					String key = item.split(",")[0].split("#")[1];
-					String value = item.split(",")[0];
+				
+				for (int i = 1 ; i < oldKGPID.length; i++) {
+					
+					String key = oldKGPID[i].split(",")[0].split("#")[1];
+					String value = oldKGPID[i].split(",")[1];
+
 					
 					if (key.equals("lastModified")) {
 						update.PIDlastModified(pid, lastModified);
 					}
 					if (key.equals("alternateOf")) {
-						alternateOf.remove(value);
+						alternateOf.remove(value);					
 					}
 					if (key.equals("primarySourceOf")) {
 						primarySourceOf.remove(value);
@@ -359,28 +359,34 @@ public class FrontEnd {
 			}
 			
 			if (!alternateOf.isEmpty()) {
-				for (String extra : alternateOf)
-				update.PIDprovenUpdate(pid, "alternateOf", extra);
+				for (String extra : alternateOf) {
+					update.PIDprovenUpdate(pid, "alternateOf", extra);
+				}
 			}
 			if (!primarySourceOf.isEmpty()) {
-				for (String extra : primarySourceOf)
-				update.PIDprovenUpdate(pid, "primarySourceOf", extra);
+				for (String extra : primarySourceOf) {
+					update.PIDprovenUpdate(pid, "primarySourceOf", extra);
+				}
 			}
 			if (!quotationOf.isEmpty()) {
-				for (String extra : quotationOf)
-				update.PIDprovenUpdate(pid, "quotationOf", extra);
+				for (String extra : quotationOf) {
+					update.PIDprovenUpdate(pid, "quotationOf", extra);
+				}
 			}
 			if (!revisionOf.isEmpty()) {
-				for (String extra : revisionOf)
-				update.PIDprovenUpdate(pid, "revisionOf", extra);
+				for (String extra : revisionOf) {
+					update.PIDprovenUpdate(pid, "revisionOf", extra);
+				}
 			}
 			if (!specializationOf.isEmpty()) {
-				for (String extra : specializationOf)
-				update.PIDprovenUpdate(pid, "specializationOf", extra);
+				for (String extra : specializationOf) {
+					update.PIDprovenUpdate(pid, "specializationOf", extra);
+				}
 			}
 			if (!wasDerivedFrom.isEmpty()) {
-				for (String extra : wasDerivedFrom)
-				update.PIDprovenUpdate(pid, "wasDerivedFrom", extra);
+				for (String extra : wasDerivedFrom) {
+					update.PIDprovenUpdate(pid, "wasDerivedFrom", extra);
+				}
 			}
 			
 			mav.addObject("output", output);
@@ -395,15 +401,14 @@ public class FrontEnd {
 				List<Document> has = (List<Document>) item.get("has");
 				
 				for (Document object : has) {
-					output.put(object.getString("property"), object.getString("_id"));
+					output.put(object.getString("_id"), object.getString("property"));
 				}
 				
 			}
 			mav.addObject("output", output);
 			
 		}
-		System.out.println(knowledge);
-		System.out.println(query);
+
 		if (knowledge != null && query != null) {
 			
 			if (query.equals("local")) {
@@ -535,9 +540,10 @@ public class FrontEnd {
 				String[] oldKGPID = new KGquery().queryOne(knowledge, (new Property()).property.getProperty("graphdb")).split("\n");
 				if (oldKGPID.length > 1) {
 					//existed
-					for (String item : oldKGPID) {
-						String key = item.split(",")[0].split("#")[1];
-						String value = item.split(",")[0];
+					for (int i =1 ; i < oldKGPID.length; i++) {
+						System.out.println(oldKGPID[i]);
+						String key = oldKGPID[i].split(",")[0].split("#")[1];
+						String value = oldKGPID[i].split(",")[1];
 
 						if (key.equals("alternateOf")) {
 							output.put("alternateOf", value);
@@ -575,6 +581,7 @@ public class FrontEnd {
 			}
 			
 			if (query.equals("kg")) {
+				System.out.println(knowledge);
 				String[] kglistAll = new KGquery().useKGPIDlistAll(knowledge, (new Property()).property.getProperty("graphdb")).split("\n");
 				KGbuilder object = new KGbuilder();
 				if (kglistAll.length > 1) {
@@ -604,7 +611,7 @@ public class FrontEnd {
 				String[] roList = new KGquery().useKGPIDfindRO(knowledge, (new Property()).property.getProperty("graphdb")).split("\n");
 				if (roList.length > 1) {
 					for (int i = 1; i < roList.length; i++) {
-						String id = kglistAll[i];
+						String id = roList[i];
 						String[] list = new KGquery().useROfindFeature(id, (new Property()).property.getProperty("graphdb")).split("\n");
 						if (list.length > 1) {
 							for (int j = 1; j < list.length; j++) {
@@ -708,6 +715,8 @@ public class FrontEnd {
 						}
 					}
 				}
+				
+				
 
 				String[] kglistAll = new KGquery().useKGPIDlistAll(kgPID, (new Property()).property.getProperty("graphdb"))
 						.split("\n");
@@ -715,7 +724,7 @@ public class FrontEnd {
 				if (kglistAll.length > 1) {
 					for (int i = 1; i < kglistAll.length; i++) {
 						String id = kglistAll[i];
-						System.out.println(id);
+						System.out.println("kglistall "+id);
 						String[] entity = new KGquery().queryOne(id, (new Property()).property.getProperty("graphdb"))
 								.split("\n");
 						object.createResource("", id, new HashMap<String, String>());
@@ -741,13 +750,14 @@ public class FrontEnd {
 						.split("\n");
 				if (roList.length > 1) {
 					for (int i = 1; i < roList.length; i++) {
-						String id = kglistAll[i];
+						String id = roList[i];
+						System.out.println("rolist "+id);
 						String[] list = new KGquery().useROfindFeature(id, (new Property()).property.getProperty("graphdb"))
 								.split("\n");
 						if (list.length > 1) {
 							for (int j = 1; j < list.length; j++) {
 								String id2 = list[j];
-								System.out.println(id2);
+								System.out.println("feature "+id2);
 								String[] entity = new KGquery().queryOne(id2, (new Property()).property.getProperty("graphdb"))
 										.split("\n");
 								object.createResource("", id2, new HashMap<String, String>());

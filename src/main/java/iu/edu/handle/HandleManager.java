@@ -18,8 +18,8 @@ public class HandleManager {
 	
 	
 	public void createHandle(String pid, HashMap<String, String> c) throws Exception {
-		//RegisterPID re = new RegisterPID();
-		//re.createHandle(pid, c);
+		RegisterPID re = new RegisterPID();
+		re.createHandle(pid, c);
 	}
 	
 	public HashMap<String, String> KI(HashMap<String, String> c, 

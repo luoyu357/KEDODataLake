@@ -18,72 +18,70 @@
                 <div class="container-sm">
                     <div class="hero-inner">
                         <h1 class="hero-title h2-mobile mt-0 is-revealing" style="visibility: visible;">KEDO Data Lake Provenance/Insight Update Page</h1>
-                        <form action="/update" method="get">
+                        <form action="/update" method="post">
                         <p class="hero-paragraph is-revealing" style="visibility: visible;">Here, please type in the targetPID, provenance and objectPID information</p>                               
                         	
                         	<table style ="width:100%">
                         	<tr>
                         	<td style="color:#000000">Target PID:</td>
-							<td><input id="targetPID" type="text" name="targetPID" placeholder="http://35.83.244.177:8000/api/handles/20.500.12033/b86b2825-f854-4311-84f0-38b1cab89551"/>
+							<td><input id="target" type="text" name="target" placeholder="http://35.83.244.177:8000/api/handles/20.500.12033/b86b2825-f854-4311-84f0-38b1cab89551"/>
 							</tr>
 							
 							<tr>
                         	<td style="color:#000000">Provenance:</td>
-							<td><input id="provenance" type="text" name="provenance" placeholder="specializationOf"/>
+							<td><input id="pro" type="text" name="pro" placeholder="specializationOf"/>
 							</tr>
-							
-							
+			
 							<tr>
                         	<td style="color:#000000">Object PID:</td>
-							<td><input id="objectPID" type="text" name="objectPID" placeholder="http://35.83.244.177:8000/api/handles/20.500.12033/b86b2825-f854-4311-84f0-38b1cab89551"/>
+							<td><input id="object" type="text" name="object" placeholder="http://35.83.244.177:8000/api/handles/20.500.12033/b86b2825-f854-4311-84f0-38b1cab89551"/>
 							</tr>
-							
-                     	
+							<button type="submit" class="primary submit-btn", formmethod="post"> Submit</button>
                         	</table>
                         	<br>
-                        	<button type="submit" class="primary submit-btn", formmethod="get"> Submit</button>                       	
+                        	                       	
                         </form>
                         
-                        <form action="/updateInsight" method="get">
+                        <form action="/insight" method="post">
                         <p class="hero-paragraph is-revealing" style="visibility: visible;">Here, please type in the updated Insight information</p>                               
                         	
                         	<table style ="width:100%">
                         	<tr>
                         	<td style="color:#000000">File PID:</td>
-							<td><input id="targetPID" type="text" name="filePID" placeholder="http://35.83.244.177:8000/api/handles/20.500.12033/b86b2825-f854-4311-84f0-38b1cab89551"/>
+							<td><input id="filePID" type="text" name="filePID" placeholder="http://35.83.244.177:8000/api/handles/20.500.12033/b86b2825-f854-4311-84f0-38b1cab89551"/>
 							</tr>
 							
 							<tr>
                         	<td style="color:#000000">Workflow PID:</td>
-							<td><input id="provenance" type="text" name="containerPID" placeholder="specializationOf"/>
+							<td><input id="containerPID" type="text" name="containerPID" placeholder="http://35.83.244.177:8000/api/handles/20.500.12033/b86b2825-f854-4311-84f0-38b1cab89551"/>
 							</tr>
 							
 							
 							<tr>
                         	<td style="color:#000000">Feature (variable) IRI:</td>
-							<td><input id="objectPID" type="text" name="varIRI" placeholder="http://35.83.244.177:8000/b86b2825-f854-4311-84f0-38b1cab89551"/>
+							<td><input id="varIRI" type="text" name="varIRI" placeholder="http://35.83.244.177:8000/b86b2825-f854-4311-84f0-38b1cab89551"/>
 							</tr>
 							
 							
 							<tr>
                         	<td style="color:#000000">Description:</td>
-							<td><input id="objectPID" type="text" name="description" placeholder="This is ....."/>
+							<td><input id="description" type="text" name="description" placeholder="This is ....."/>
 							</tr>
 							
 							<tr>
                         	<td style="color:#000000">Running Command:</td>
-							<td><input id="objectPID" type="text" name="runCommand" placeholder="run ..."/>
+							<td><input id="runCommand" type="text" name="runCommand" placeholder="run ..."/>
 							</tr>
 							
 							<tr>
                         	<td style="color:#000000">Result:</td>
-							<td><input id="objectPID" type="text" name="result" placeholder="result: ..."/>
+							<td><input id="result" type="text" name="result" placeholder="result: ..."/>
 							</tr>
 							
-                     	
+                     		<button type="submit" class="primary submit-btn", formmethod="post"> Submit</button>
                         	</table>
                         	<br>
-                        	<button type="submit" class="primary submit-btn", formmethod="get"> Submit</button>                       	
+                        	                       	
                         </form>
                  
                     </div>

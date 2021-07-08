@@ -31,7 +31,7 @@ public class Property {
 	public Property() throws IOException {
 		Path currentRelativePath = Paths.get("");
 		String s = currentRelativePath.toAbsolutePath().toString();
-		InputStream input = new FileInputStream(s+"/config.properties");
+		InputStream input = new FileInputStream(s+"/src/main/java/iu/edu/kedo/config.properties");
 		property.load(input);
 	}
 
