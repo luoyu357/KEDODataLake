@@ -34,10 +34,7 @@ public class UpdateProvenance {
 	}
 	
 	public static void main(String[] args) throws HandleException, Exception {
-		UpdateProvenance test = new UpdateProvenance();
-		HashMap<String, String> provenance = new HashMap<String, String>();
-		provenance.put("specializationOf", "http://35.83.244.177:8000/api/handles/20.500.12033/0604b2a4-bc68-4bf0-a43a-2a329b41563b");
-		test.UpdateProvenance("http://35.83.244.177:8000/api/handles/20.500.12033/6c7cedec-ab76-4c0d-a151-03c3726807ac", provenance);
+	
 	}
 
 }

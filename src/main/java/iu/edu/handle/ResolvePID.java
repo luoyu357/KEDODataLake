@@ -27,9 +27,7 @@ public class ResolvePID {
 	}
 	
 	public static void main(String[] args) throws HandleException, Exception {
-		ResolvePID test = new ResolvePID();
-		test.handleResolve("http://35.83.244.177:8000/api/handles/20.500.12033/6c7cedec-ab76-4c0d-a151-03c3726807ac");
-
+		
 	}
 
 }
