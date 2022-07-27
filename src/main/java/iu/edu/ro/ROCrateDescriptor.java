@@ -59,7 +59,7 @@ public class ROCrateDescriptor {
 		output.put("localPath", path);
 		
 		String uuid = UUID.randomUUID().toString();
-		about.put("identifier", handleURL+uuid);
+		about.put("identifier", uuid);
 		output.put("pid", handleURL+uuid);
 		
 		about.put("category", "RO-Crate");
@@ -101,7 +101,7 @@ public class ROCrateDescriptor {
 		output.put("fileFormat", fileFormat);
 		
 		String uuid = UUID.randomUUID().toString();
-		temp.put("identifier", handleURL+uuid);
+		temp.put("identifier", uuid);
 		output.put("pid", handleURL+uuid);
 		uuid = UUID.randomUUID().toString();
 		temp.put("filePID", handleURL+uuid);

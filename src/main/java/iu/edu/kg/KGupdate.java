@@ -52,9 +52,7 @@ public class KGupdate {
 	    }
 		
 		KGbuilder builder = new KGbuilder();
-	    
-	    HashMap<String, String> info = new HashMap<String, String>();
-	    
+	    	    
 	    builder.addPredicate(targetPID, "http://www.entity.com/field#"+type, value);
 		
 		builder.publishKG((new Property()).property.getProperty("graphdb"));
@@ -102,7 +100,6 @@ public class KGupdate {
 	
 	
 	
-	//http://149.165.168.252:8000/api/handles/11723/6e0f2f7e-cd05-4f5a-93ca-f8986e6b48bf
 		
 	public static void main(String[] args) throws HandleException, Exception {
 		

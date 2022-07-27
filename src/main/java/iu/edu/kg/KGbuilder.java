@@ -46,7 +46,6 @@ public class KGbuilder {
 		StringWriter out = new StringWriter();
 		model.write(out, syntax);
 		String result = out.toString();
-		//System.out.println(result);
 		
         writer.write(result);                
         writer.flush(); 
@@ -74,6 +73,14 @@ public class KGbuilder {
 			Property predicate = model.createProperty(item.getKey().toString());
 			subject.addProperty(predicate, item.getValue().toString());
 		}
+		
+		return subject;
+	}
+	
+	public Resource createResource(String id, String property, String value) {
+		Resource subject = model.createResource(id);
+		Property predicate = model.createProperty(property);
+		subject.addProperty(predicate, value);
 		
 		return subject;
 	}

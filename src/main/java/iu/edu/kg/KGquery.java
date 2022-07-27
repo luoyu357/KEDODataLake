@@ -55,6 +55,7 @@ public class KGquery {
 			query += "?x <" + item.getKey() + '>'+ " " +'"'+ item.getValue() + '"'+" .\n";
 		}
 		query += "}";
+		
 
 		StringBuilder result = new StringBuilder();
 	    URL url = new URL(gdb+"?query="+URLEncoder.encode(query, StandardCharsets.UTF_8));
@@ -72,7 +73,7 @@ public class KGquery {
 	}
 	
 	public String querySharedPID(HashMap<String, String> c, String gdb) throws IOException {
-		String query = "select distinct ?w where {\n";
+		String query = "select ?w where {\n";
 		for (Map.Entry item : c.entrySet()) {
 			query += "?x <" + item.getKey() + '>'+ " " +'"'+ item.getValue() + '"'+" .\n";
 		}
@@ -80,7 +81,6 @@ public class KGquery {
 		query += "?y <http://www.openarchives.org/ore/terms#isReferencedBy> ?z .\n";
 		query += "?z <http://www.entity.com/field#filePID> ?w .\n";
 		query += "}";
-		
 		
 		StringBuilder result = new StringBuilder();
 	    URL url = new URL(gdb+"?query="+URLEncoder.encode(query, StandardCharsets.UTF_8));
@@ -101,7 +101,7 @@ public class KGquery {
 	
 	public String queryOne(String id, String gdb) throws IOException{
 		
-		String query = "select distinct ?w ?z where {\n";
+		String query = "select ?w ?z where {\n";
 		query += "<"+id+"> ?w ?z }";
 	
 		StringBuilder result = new StringBuilder();
@@ -121,7 +121,7 @@ public class KGquery {
 	
 	
 	public String queryPIDGraph(String id, String gdb) throws IOException{
-		String query = "select distinct ?y where {";
+		String query = "select ?y where {";
 		query += "{";
 		query += "select ?y where {";
 		query += "<"+id+"> ?aggregates ?y. ?y rdf:type 'PID'";

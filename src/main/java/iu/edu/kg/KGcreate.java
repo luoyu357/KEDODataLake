@@ -52,6 +52,7 @@ public class KGcreate {
     private iu.edu.kedo.Property input;
 	
 	
+    
 	public KGcreate() throws Exception {
 		this.input = new iu.edu.kedo.Property();
 		this.gdb1 = input.property.getProperty("graphdb");
@@ -63,6 +64,8 @@ public class KGcreate {
 		this.date = formatter.format(new Date());
 	}
 	
+    
+    
 
 	
 	public HashMap<String, String> createKG(String path) throws Exception{
@@ -80,7 +83,10 @@ public class KGcreate {
 		kiKG.put("dateCreation", date);
         kiKG.put("etag", "KEDO Object PID");
         kiKG.put("lastModified", date);
+        //*****************************
         kiKG.put("digitalObjectLocation", this.input.property.getProperty("kedo.service")+"queryPage?query=local&knowledge="+kedoObjectID);
+        
+        
         
         kiH = hm.KI(kiKG, new HashMap<String, String>(), new HashMap<String, String>());
         
@@ -102,7 +108,9 @@ public class KGcreate {
         kiKG.put("dateCreation", date);
         kiKG.put("etag", "KEDO KG PID");
         kiKG.put("lastModified", date);
+        //********************************
         kiKG.put("digitalObjectLocation", this.input.property.getProperty("kedo.service")+"queryPage?query=local&knowledge="+kedoKGID);
+        
         
         kiH = hm.KI(kiKG, new HashMap<String, String>(), new HashMap<String, String>());
 		
@@ -124,7 +132,10 @@ public class KGcreate {
 			//a new KEDO Type
 					
 			kiKG.put("etag", "KEDO Type PID");
+			//*********************************
 			kiKG.put("digitalObjectLocation", this.input.property.getProperty("kedo.service")+"queryPage?query=local&knowledge="+kedoTypeID);
+			
+			
 			
 			kiH = hm.KI(kiKG, new HashMap<String, String>(), new HashMap<String, String>());
 			
@@ -151,7 +162,8 @@ public class KGcreate {
 		//4. create KEDO RO-Crate
 		List<String> hasPart = ro.hasPart(path);
 		HashMap <String, String> root = ro.rootCollection(path);
-			
+		
+		
 		this.kg = new KGbuilder();
 		
 		for (String i : hasPart) {
@@ -167,7 +179,10 @@ public class KGcreate {
 				String internalROPID = internalRO.getProperty(propertyPID).getString();
 				
 				kiKG.put("etag", "RO-Crate PID");
+				//*************************
 				kiKG.put("digitalObjectLocation", this.input.property.getProperty("kedo.service")+"queryPage?query=local&knowledge="+internalRO.getURI());
+				
+				
 				kiH = hm.KI(kiKG, new HashMap<String, String>(), new HashMap<String, String>());
 		
 				createHandle(internalROPID, kiH);
@@ -205,6 +220,7 @@ public class KGcreate {
 				}
 				
 				this.hmo.insertDocument(fileM.get("filePID"), pidTable2);
+				
 				this.kg.publishKG(gdb1);
 				
 				
@@ -289,7 +305,9 @@ public class KGcreate {
 			return KEDOType;
 		} else {
 			String hs = "http://www.kedo.com/";
+			//**************************
 			String prefix =  this.input.property.getProperty("handle.restful.api.url");
+			
 			String s = UUID.randomUUID().toString();
 			properties.put("http://www.entity.com/field#pid", prefix+s);
 			//CREATE
@@ -314,7 +332,7 @@ public class KGcreate {
 		
 		cn.put(RDF.type.toString(), "RO-Crate");
 		cn.put(RDFS.label.toString(), "KEDO RO-Crate");
-		//cn.put("http://www.entity.com/field#pid", pid);
+		cn.put("http://www.entity.com/field#pid", pid);
 		Resource KEDORO =  this.kg.createResource("http://www.ro.com/", hs, cn);
 		
 		this.kg.addPredicate(KEDORO, "http://www.openarchives.org/ore/terms#describes", KEDO);
@@ -325,7 +343,9 @@ public class KGcreate {
 	public Resource createInternalRO(HashMap<String, String> fileM, Resource KEDORO) {
 		HashMap<String, String> cn = new HashMap<String, String>();
 		String pid = fileM.get("pid");
+		//***************************
 		String hs = pid.split(this.input.property.getProperty("handle.prefix")+"/")[1];
+		
 		String propertyns = "http://www.entity.com/field#";
 		for (Map.Entry item : fileM.entrySet()) {
 			cn.put(propertyns+item.getKey().toString(), item.getValue().toString());		
@@ -340,16 +360,25 @@ public class KGcreate {
 		return InternalRO;
 	}
 	
+	// Feature content rule: there is no special characters: \, \n, ", %.
+	// will use the different symbols to repalce them: \ -> #, \n -> \t, " -> ', % -> *
+	
 	public Resource createFeature(HashMap<String, String> fileM) throws IOException {
+		System.out.println("working");
 		String pid = fileM.get("pid");
+		//****************************
 		String hs = pid.split(this.input.property.getProperty("handle.prefix")+"/")[1];
-		
 		
 		ReadInfo info = new ReadInfo(fileM.get("localPath"));
 		HashMap<String, String> attribute = new HashMap<String, String>();
 		for (Map.Entry item : info.getGlobalAttributes().entrySet()) {
 			if (!item.getKey().toString().equals("pid")) {
-				attribute.put("http://www.entity.com/field#"+item.getKey().toString(), item.getValue().toString());
+				if (item.getValue() == null) {
+					attribute.put("http://www.entity.com/field#"+item.getKey().toString().replace("%", "*"), "null");
+				} else {
+					attribute.put("http://www.entity.com/field#"+item.getKey().toString().replace("%", "*"), item.getValue().toString().replace("\"", "'").replace("\n", " ").replace("\\", "#"));
+				}
+				
 			}
 			
 		}
@@ -358,15 +387,23 @@ public class KGcreate {
 		
 		Resource attE = this.kg.createResource("http://www.feature.com/", hs, attribute);
 		this.kg.addPredicate(attE.getURI(), "http://www.openarchives.org/ore/terms#isReferencedBy", "http://www.ro.com/"+hs);
+		
 		for (Map.Entry item : info.getVariables().entrySet()) {
 			HashMap<String, String> variable = new HashMap<String, String>();
 			for (Map.Entry data : ((HashMap<String, String>) item.getValue()).entrySet()) {
-				variable.put("http://www.entity.com/field#"+data.getKey().toString(), data.getValue().toString());
+				
+				if (data.getValue() == null) {
+					variable.put("http://www.entity.com/field#"+data.getKey().toString().replace("%", "*"), "null");
+				}else {
+					variable.put("http://www.entity.com/field#"+data.getKey().toString().replace("%", "*"), data.getValue().toString().replace("\"", "'").replace("\n", " ").replace("\\", "#"));
+				}
+				
 			}
 			variable.put(RDF.type.toString(), "Feature");
-			variable.put(RDFS.label.toString(), item.getKey().toString());
+			variable.put(RDFS.label.toString(), item.getKey().toString().replace("\\", "#"));
 			
 			KGquery query = new KGquery();
+			
 			String result = query.queryFeature(variable, gdb1);
 			
 			if (result.length()>1) {
@@ -477,7 +514,9 @@ public class KGcreate {
 	}
 
 	public static void main(String[] args) throws Exception {
-	
+		
+
+		
 	}
 	
 
