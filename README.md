@@ -83,7 +83,7 @@ mvn spring-boot:run
 ## Components
 
 1. `src` folder
-  1. KEDO Data Model
+  - KEDO Data Model
   2. KEDO Data Lake
   3. KEDO Learner
 2. `images` folder
