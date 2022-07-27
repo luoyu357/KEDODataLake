@@ -84,16 +84,16 @@ mvn spring-boot:run
 
 1. `src` folder
   * KEDO Data Model
-  2. KEDO Data Lake
-  3. KEDO Learner
+  * KEDO Data Lake
+  * KEDO Learner
 2. `images` folder
-  1. KEDO Data Model Images
-  2. KEDO Data Lake Images
-  3. KEDO Learner Images
-  4. KEDO Learner Assessment Images
-  5. Appendix
+  * KEDO Data Model Images
+  * KEDO Data Lake Images
+  * KEDO Learner Images
+  * KEDO Learner Assessment Images
+  * Appendix
 3. `Python` folder
-  1. code of TransE and KEDO Learner in python format
+  * code of TransE and KEDO Learner in python format
 
 
 
